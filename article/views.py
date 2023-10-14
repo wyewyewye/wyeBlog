@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from .models import ArticlePost
 from .form import ArticlePostForm
 from django.contrib.auth.models import User
@@ -26,9 +26,12 @@ def article_list(request):
 @require_http_methods(['GET', 'POST'])
 def article_detail(request, id):
     print_request(request)
-    if id <= 0 or id > ArticlePost.objects.count():
+    if id <= 0:
         return HttpResponseNotFound()
-    article = ArticlePost.objects.get(id=id)
+    try:
+        article = ArticlePost.objects.get(id=id)
+    except Exception as e:
+        return HttpResponseNotFound()
     text = article.body
     article.body = markdown.markdown(text,
         extensions=[
@@ -54,6 +57,15 @@ def article_create(request):
         article_post_form = ArticlePostForm()
         context = {'article_post_form': article_post_form}
         return render(request, 'article/create.html', context)
+    
+@require_http_methods(['POST'])
+def article_delete(request, id):
+    print_request(request)
+    if request.POST.get('password', '') != 'wye123':
+        return HttpResponseForbidden()
+    article = ArticlePost.objects.get(id=id)
+    article.delete()
+    return redirect('article:article_list')
 
 def test404(request):
     return HttpResponseNotFound()

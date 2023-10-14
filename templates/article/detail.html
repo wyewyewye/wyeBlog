@@ -10,10 +10,35 @@
     <div class="container">
         <div class="row">
             <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
-            <div class="col-12 alert alert-success">作者：{{ article.author }}</div>
+            <div class="col-12 alert alert-success">
+                作者：{{ article.author }}
+                <a href="#" onclick="deleteArticle()">删除文章</a>
+            </div>
             <div class="col-12">
                 <p>{{ article.body|safe }}</p>
             </div>
         </div>
     </div>
+
+    <form id="deleteForm" action="{% url 'article:article_delete' article.id %}" method="POST" hidden>
+        {% csrf_token %}
+        <label for="deletePassword">删除密码</label>
+        <input type="password" id="deletePassword" name="password" />
+        <button type="submit">确定</button>
+    </form>
+
+    <script>
+        function deleteArticle () {
+            console.log('delete article');
+            layer.open({
+                title: '删除文章 {{ article.title }}',
+                content: '请输入删除文章的密码以删除文章:<input type="password" id="deletePasswordInLayer" />',
+                yes: function (index, layerObj) {
+                    $('input#deletePassword')[0].value = $('input#deletePasswordInLayer')[0].value;
+                    layer.close(index);
+                    $('form#deleteForm').submit();
+                }
+            });
+        }
+    </script>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden, HttpResponseServerError
 from .models import ArticlePost
 from .form import ArticlePostForm
 from django.contrib.auth.models import User
@@ -14,7 +14,7 @@ def print_request(req):
     """)
 
 # Create your views here.
-@csrf_exempt
+# @csrf_exempt
 @require_http_methods(['GET'])
 def article_list(request):
     print_request(request)
@@ -66,6 +66,29 @@ def article_delete(request, id):
     article = ArticlePost.objects.get(id=id)
     article.delete()
     return redirect('article:article_list')
+
+@require_http_methods(['GET', 'POST'])
+def article_update(request, id):
+    print_request(request)
+    article = ArticlePost.objects.get(id=id)
+    if request.method == 'POST':
+        article_post_form = ArticlePostForm(data=request.POST)
+        if article_post_form.is_valid():
+            article.title = request.POST['title']
+            article.body = request.POST['body']
+            article.save()
+            return redirect("article:article_detail", id=id)
+        else:
+            return HttpResponse("表单内容有误，请重新填写。")
+    else:
+        # 创建表单类实例
+        article_post_form = ArticlePostForm()
+        # 赋值上下文，将 article 文章对象也传递进去，以便提取旧的内容
+        context = { 'article': article, 'article_post_form': article_post_form }
+        # 将响应返回到模板中
+        return render(request, 'article/update.html', context)
+    
+    return HttpResponseServerError()
 
 def test404(request):
     return HttpResponseNotFound()

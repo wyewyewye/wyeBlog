@@ -28,6 +28,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8080" , #发起请求的URL要求添加端口和http
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1", # 发起请求的地址，不需要添加http和端口
+]
+
 
 # Application definition
 
@@ -39,9 +47,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "article",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -49,6 +59,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+MIDDLEWARE_CLASSES = [
+    
 ]
 
 ROOT_URLCONF = "wyeBlog.urls"

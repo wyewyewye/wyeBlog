@@ -73,6 +73,8 @@ def article_update(request, id):
     article = ArticlePost.objects.get(id=id)
     if request.method == 'POST':
         article_post_form = ArticlePostForm(data=request.POST)
+        post_user = request.user.name
+        print(f'post user: {post_user}')
         if article_post_form.is_valid():
             article.title = request.POST['title']
             article.body = request.POST['body']

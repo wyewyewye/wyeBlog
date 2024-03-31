@@ -9,13 +9,13 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
+            <h1 class="col-12 mt-4 mb-4 border border-info rounded">{{ article.title }}</h1>
             <div class="col-12 alert alert-success">
                 作者：{{ article.author }}
                 <a href="#" onclick="deleteArticle()">删除文章</a>
                 <a href="{% url "article:article_update" article.id %}"> 编辑文章 </a>
             </div>
-            <div class="col-12">
+            <div class="col-12 border border-info rounded">
                 <p>{{ article.body|safe }}</p>
             </div>
         </div>

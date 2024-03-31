@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-_b2)0=)lb!l0mgmnu7(tc*698gx(f$4z)x+y%y-yy4xf*0x95%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080", #发起请求的URL要求添加端口和http

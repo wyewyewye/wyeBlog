@@ -73,8 +73,14 @@ def article_update(request, id):
     article = ArticlePost.objects.get(id=id)
     if request.method == 'POST':
         article_post_form = ArticlePostForm(data=request.POST)
-        post_user = request.user.name
+        
+        post_user = request.user.username
         print(f'post user: {post_user}')
+        if post_user != article.author.username:
+            return HttpResponseForbidden('用户信息有误')
+        else:
+            print(f'post user: {post_user} == {article.author.username}')
+            
         if article_post_form.is_valid():
             article.title = request.POST['title']
             article.body = request.POST['body']
